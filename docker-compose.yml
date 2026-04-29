@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 529634087pog
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  auth-api:
+    build: ./auth-api
+    container_name: auth-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - data-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/app_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 529634087pog
+      INTERNAL_TOKEN: secret123
+      JWT_EXPIRATION: 24
+      JWT_SECRET: S4PPQo9diiW9AUf9yzg5z9zcqixPmyLIwCXaWJK2cn5XfOm8aJvEalktxrOcxWiv
+      DATA_API_URL: http://data-api:8081
+
+  data-api:
+    build: ./data-api
+    container_name: data-api
+    ports:
+      - "8081:8081"
+    environment:
+      INTERNAL_TOKEN: secret123
+
+volumes:
+  postgres_data:
