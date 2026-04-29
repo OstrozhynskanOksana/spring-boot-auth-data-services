@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> registerUser(@RequestBody LoginRequestDto request) {
+    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody LoginRequestDto request) {
         String token = authService.login(request);
 
         return ResponseEntity.ok(new AuthResponseDto(token));

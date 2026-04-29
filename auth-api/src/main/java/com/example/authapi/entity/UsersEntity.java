@@ -7,19 +7,20 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "users")
+public class UsersEntity {
 
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "email")
+    @Column(name = "email",  unique = true)
     private String email;
 
     @Column(name = "password")

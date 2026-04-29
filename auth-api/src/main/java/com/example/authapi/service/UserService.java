@@ -1,29 +1,43 @@
 package com.example.authapi.service;
 
 import com.example.authapi.dto.RegisterRequestDto;
-import com.example.authapi.entity.UserEntity;
+import com.example.authapi.entity.UsersEntity;
+import com.example.authapi.exception.EmailAlreadyExistsException;
 import com.example.authapi.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UsersEntity register(RegisterRequestDto request) {
+
+        try {
+            UsersEntity user = new UsersEntity();
+            user.setEmail(request.getEmail());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            log.warn("Email already exists: {}", request.getEmail());
+            throw new EmailAlreadyExistsException("The email is already in use");
+        }
     }
 
-    public UserEntity register(RegisterRequestDto request) {
-        UserEntity user = new UserEntity();
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+    public UsersEntity findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String
+                        .format("User is not found: %s", email)));
 
-        return userRepository.save(user);
 
-    }
-
-    public  UserEntity findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 }

@@ -2,7 +2,6 @@ package com.example.authapi.service;
 
 import com.example.authapi.dto.LoginRequestDto;
 import com.example.authapi.dto.RegisterRequestDto;
-import com.example.authapi.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +19,7 @@ public class AuthService {
 
 
     public String register(RegisterRequestDto request) {
-        UserEntity user = userService.register(request);
+        userService.register(request);
         return jwtService.generateJwtToken(request.getEmail());
 
 

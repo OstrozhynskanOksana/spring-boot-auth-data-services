@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 
 @Service
@@ -26,7 +27,7 @@ public class JwtService {
     public String generateJwtToken(String email) {
         return Jwts.builder()
                 .subject(email)
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration * 1000 * 60))
+                .expiration(new Date(System.currentTimeMillis() + Duration.ofHours(jwtExpiration).toMillis()))
                 .signWith(getSecretKey())
                 .compact();
     }
